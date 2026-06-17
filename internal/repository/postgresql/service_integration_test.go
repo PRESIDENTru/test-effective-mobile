@@ -2,7 +2,7 @@ package postgresql
 
 import (
 	"context"
-	"testJob/internal/models"
+	models "testJob/internal/models/db"
 	"testing"
 	"time"
 
@@ -30,20 +30,8 @@ func TestIntegration_SaveServiceSuccessful(t *testing.T) {
 		end_date:     nil,
 	}
 
-	// 1. Сохраняем пользователя
-	user := &models.User{ID: rec.user_id}
-	err := repo.SaveUser(ctx, user)
-	if err != nil {
-		t.Fatal(err)
-	}
-	var gotUserID uuid.UUID
-	err = db.Get(&gotUserID, "SELECT id FROM users WHERE id = $1", rec.user_id)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	// 2. Сохраняем название сервиса
-	err = repo.SaveServiceName(ctx, rec.service_name)
+	// 1. Сохраняем название сервиса
+	err := repo.SaveServiceName(ctx, rec.service_name)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -53,7 +41,7 @@ func TestIntegration_SaveServiceSuccessful(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	// 3. Сохраняем подписку
+	// 2. Сохраняем подписку
 	service := &models.Service{
 		ServiceID: idServiceName,
 		Price:     rec.price,
@@ -65,7 +53,7 @@ func TestIntegration_SaveServiceSuccessful(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	// 4. Проверяем, что подписка сохранилась
+	// 3. Проверяем, что подписка сохранилась
 	services, err := repo.GetServicesByUserID(ctx, rec.user_id)
 	if err != nil {
 		t.Fatal(err)

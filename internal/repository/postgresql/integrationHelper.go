@@ -32,7 +32,7 @@ func integrationDB(t *testing.T) *sqlx.DB {
 func cleanupDB(t *testing.T, db *sqlx.DB) {
 	t.Helper()
 	_, err := db.Exec(`TRUNCATE TABLE 
-        users, services_name, services
+        services_name, services
         CASCADE`)
 	if err != nil {
 		t.Logf("cleanup: %v", err)
